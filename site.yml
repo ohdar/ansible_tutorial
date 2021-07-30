@@ -17,7 +17,7 @@
         tags: always
         authorized_key:
           user: simone
-          key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOIHkLwbsEvR23YWwkUIlMMDjpAbmzHcZJeLrb4Ku6Od ansible"
+          key: "refer ignored file ansible"
         
   - hosts: file_servers
     become: true
