@@ -9,6 +9,31 @@
           update_cache: yes
         when: ansible_distribution == "Ubuntu"
 
+  - hosts: file_servers
+    become: true
+    tasks:
+      - name: install unzip
+        package:
+          name: unzip
+          state: latest
+        when: ansible_distribution == "Ubuntu"
+
+      - name: install terraform
+        unarchive:
+          src: https://releases.hashicorp.com/terraform/1.0.3/terraform_1.0.3_linux_amd64.zip
+          dest: /usr/local/bin
+          remote_src: yes
+          mode: 0755
+          owner: root
+          group: root
+        when: ansible_distribution == "Ubuntu"
+
+      - name: install ansible
+        apt:
+          name: ansible
+          state: latest
+        when: ansible_distribution == "Ubuntu"
+
   - hosts: web_servers
     become: true
     tasks:
@@ -20,6 +45,15 @@
             - libapache2-mod-php
           state: latest
         when: ansible_distribution in ["Debian","Ubuntu"]
+      
+      - name: copy default html file for site
+        tags: apache,apache2
+        copy: 
+          src: default_site.html
+          dest: /var/www/html/index.html
+          owner: root
+          group: root
+          mode: 0644
 
   - hosts: db_servers
     become: true
