@@ -22,7 +22,11 @@
         tags: always
         authorized_key:
           user: simone
+<<<<<<< HEAD
           key: "refer ignored file ansible"
+=======
+          key: "####### ansible"
+>>>>>>> 0025cb6af68520a5ff49b563b7daa5ae0e4446eb
   
       - name: add sudoers file for simone
         tags: always
