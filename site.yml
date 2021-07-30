@@ -17,7 +17,7 @@
         tags: always
         authorized_key:
           user: simone
-          key: "###############"
+          key: "####### ansible"
         
   - hosts: file_servers
     become: true
