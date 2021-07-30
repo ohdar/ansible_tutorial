@@ -17,12 +17,8 @@
         tags: always
         authorized_key:
           user: simone
-<<<<<<< HEAD
           key: "refer ignored file ansible"
-=======
-          key: "####### ansible"
->>>>>>> 0025cb6af68520a5ff49b563b7daa5ae0e4446eb
-        
+                  
   - hosts: file_servers
     become: true
     tasks:
