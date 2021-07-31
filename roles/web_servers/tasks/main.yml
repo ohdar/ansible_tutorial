@@ -1,0 +1,17 @@
+- name: install apache2 and php package
+  tags: apache,apache2,ubuntu
+  package:
+    name: 
+      - apache2
+      - libapache2-mod-php
+    state: latest
+  when: ansible_distribution in ["Debian","Ubuntu"]
+      
+- name: copy default html file for site
+  tags: apache,apache2
+  copy: 
+    src: default_site.html
+    dest: /var/www/html/index.html
+    owner: root
+    group: root
+    mode: 0644

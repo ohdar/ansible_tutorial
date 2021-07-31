@@ -1,0 +1,88 @@
+---
+  - hosts: all
+    become: true
+    pre_tasks:
+      - name: install repo cache (Ubuntu)
+        tags: always
+        apt:
+          update_cache: yes
+        changed_when: false
+        when: ansible_distribution == "Ubuntu"
+  
+  - hosts: all
+    become: true
+    tasks:
+      
+      - name: add ssh key for simone
+        tags: always
+        authorized_key:
+          user: simone
+          key: "refer ignored file ansible"
+                  
+  - hosts: file_servers
+    become: true
+    tasks:
+      - name: install unzip
+        package:
+          name: unzip
+          state: latest
+        when: ansible_distribution == "Ubuntu"
+
+      - name: install terraform
+        unarchive:
+          src: https://releases.hashicorp.com/terraform/1.0.3/terraform_1.0.3_linux_amd64.zip
+          dest: /usr/local/bin
+          remote_src: yes
+          mode: 0755
+          owner: root
+          group: root
+        when: ansible_distribution == "Ubuntu"
+
+      - name: install ansible
+        apt:
+          name: ansible
+          state: latest
+        when: ansible_distribution == "Ubuntu"
+
+  - hosts: web_servers
+    become: true
+    tasks:
+      - name: install apache2 and php package
+        tags: apache,apache2,ubuntu
+        package:
+          name: 
+            - apache2
+            - libapache2-mod-php
+          state: latest
+        when: ansible_distribution in ["Debian","Ubuntu"]
+      
+      - name: copy default html file for site
+        tags: apache,apache2
+        copy: 
+          src: default_site.html
+          dest: /var/www/html/index.html
+          owner: root
+          group: root
+          mode: 0644
+
+  - hosts: db_servers
+    become: true
+    tasks:
+      - name: install mariadb package (Ubuntu)
+        tags: db,mariadb,ubuntu
+        apt:
+          name: mariadb-server
+          state: latest
+        when: ansible_distribution == "Ubuntu"
+
+  - hosts: file_servers
+    become: true
+    tasks:
+      - name: install samba package (Ubuntu)
+        tags: samba
+        package:
+          name: samba
+          state: latest
+        when: ansible_distribution == "Ubuntu"
+
+

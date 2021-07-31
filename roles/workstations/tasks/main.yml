@@ -1,0 +1,21 @@
+- name: install unzip
+  package:
+    name: unzip
+    state: latest
+  when: ansible_distribution == "Ubuntu"
+
+- name: install terraform
+  unarchive:
+    src: https://releases.hashicorp.com/terraform/1.0.3/terraform_1.0.3_linux_amd64.zip
+    dest: /usr/local/bin
+    remote_src: yes
+    mode: 0755
+    owner: root
+    group: root
+  when: ansible_distribution == "Ubuntu"
+
+- name: install ansible
+  apt:
+    name: ansible
+    state: latest
+  when: ansible_distribution == "Ubuntu"

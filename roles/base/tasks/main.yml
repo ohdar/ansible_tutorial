@@ -1,0 +1,6 @@
+- name: add ssh key for simone
+  tags: always
+  authorized_key:
+    user: simone
+    key: "refer ignored file ansible"
+    
