@@ -5,7 +5,7 @@
       - apache2
       - libapache2-mod-php
     state: latest
-  when: ansible_distribution in ["Debian","Ubuntu"]
+  when: ansible_distribution in ["Debian","Ubuntu"]  
       
 - name: copy default html file for site
   tags: apache,apache2
