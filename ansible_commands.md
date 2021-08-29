@@ -144,3 +144,90 @@ variable: "{{ correct }} Testing"
 <azureuser@azure playbooks>$ ansible-playbook servers selinux.yml
 
 ```
+
+# Modifying host inventry file
+
+```
+localhost
+ansible-master.localdomain.local
+node2.localdomain.local
+node3.localdomain.local
+node4.localdomain.local
+
+master ansible_host=ansible-master.localdomain.local ansible_connection=ssh ansible_user=root
+node2 ansible_host=node2.localdomain.local ansible_connection=ssh ansible_user=root
+node3 ansible_host=node3.localdomain.local ansible_connection=ssh ansible_user=root
+node4 ansible_host=node4.localdomain.local ansible_connection=ssh ansible_user=root
+
+[servers]
+master
+node2
+node3
+node4
+
+[nodes]
+node2
+node3
+node4
+
+[all:children]
+servers
+nodes
+
+
+```
+
+# New Modifed host inventry file adding playbook variables to host files and calling it to playbook
+
+```
+localhost
+ansible-master.localdomain.local
+node2.localdomain.local
+node3.localdomain.local
+node4.localdomain.local
+
+master ansible_host=ansible-master.localdomain.local 
+node2 ansible_host=node2.localdomain.local 
+node3 ansible_host=node3.localdomain.local 
+node4 ansible_host=node4.localdomain.local 
+
+[servers]
+master
+node2
+node3
+node4
+
+[servers:vars]
+ansible_connection=ssh
+ansible_user=root
+status=disabled             # or you can write status=enforcing
+
+[nodes]
+node2
+node3
+node4
+
+[all:children]
+servers
+nodes
+
+
+<azureuser@azure playbooks>$ sudo nano selinux.yml
+
+---
+- name: selinux enable or disable
+  hosts: servers
+  tasks:
+    - name: changing SELinux from config file
+      lineinfile:
+        path: /etc/selinux/config
+        regexp: '^SELINUX='
+        line: 'SELINUX={{ status }}' # status variable called from above vars section status: disabled
+...
+
+<azureuser@azure playbooks>$ cat /etc/selinux/config
+
+<azureuser@azure playbooks>$ ansible-playbook servers selinux.yml
+
+
+```
