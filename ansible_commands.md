@@ -82,4 +82,21 @@ variable: "{{ correct }} Testing"
 
 ```
 
+# Lab 
+```
+<azureuser@azure>$ mkdir /playbooks 
+<azureuser@azure>$ ls
+<azureuser@azure>$ cd /playbooks/
+<azureuser@azure playbooks>$ sudo nano pingtest.yml or sudo nano pingtest.yaml #any extension is valid.
 
+---
+- name: First playbook ping test
+  hosts: servers
+  tasks:
+    - name: Ping test
+      ping:
+...
+
+<azureuser@azure playbooks>$ ansible-playbook pingtest.yml
+
+```
