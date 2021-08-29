@@ -51,3 +51,15 @@ ansible -i [path-to-inventry-file] -m [module] -a [arguments] -u [user name] --b
 5. Key value Pairs "<"key">": "<"value">"
 6. All the playbooks are written in YAML == "[Y]et [A]nother [M]arkup [L]anguage"
 
+## Playbook Alignment
+```
+---
+-host: all
+ tasks:
+    -name: Copy File
+    -copy:
+        src: /home/azureuser/.ssh/id_rsa.pub
+        dest:/home/azureuser/.ssh/authorized_keys
+            owner:azureuser
+...
+```
