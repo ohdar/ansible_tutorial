@@ -51,7 +51,9 @@ ansible -i [path-to-inventry-file] -m [module] -a [arguments] -u [user name] --b
 5. Key value Pairs "<"key">": "<"value">"
 6. All the playbooks are written in YAML == "[Y]et [A]nother [M]arkup [L]anguage"
 
-## Playbook Alignment
+## Playbooks ar combination of plays and tasks
+A play can have number of tasks. In playbook there is number of plays. In this example here single play and multiple tasks. [Note: Alignment should be perfect]
+### Playbook Alignment
 ```
 ---
 -host: all
