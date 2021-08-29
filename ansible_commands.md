@@ -852,5 +852,62 @@ Encryption successful
 
 ...
 
+<azureuser@azure playbooks>$ cat /etc/ansible/hosts
+
+--------------------#content of ansible hosts-------------------------
+localhost
+ansible-master.localdomain.local
+node2.localdomain.local
+node3.localdomain.local
+node4.localdomain.local
+
+master ansible_host=ansible-master.localdomain.local 
+node2 ansible_host=node2.localdomain.local 
+node3 ansible_host=node3.localdomain.local 
+node4 ansible_host=node4.localdomain.local 
+
+[servers]
+master
+node2
+node3
+node4
+
+[servers:vars]
+ansible_connection=ssh
+ansible_user=root
+status=disabled             # or you can write status=enforcing
+
+[nodes]
+node2
+node3
+node4
+
+[all:children]
+servers
+nodes
+--------------content of ansible hosts-------------------------------
+
+<azureuser@azure playbooks>$ ansible-vault encrypt /etc/ansible/hosts
+New vault password:*****
+Confirm New Vault password:*****
+
+<azureuser@azure playbooks>$ sudo nano pingtest.yml
+
+---
+- name: First playbook ping test
+  hosts: node2
+  tasks:
+   - name: Ping test
+     ping:
+
+...
+
+<azureuser@azure playbooks>$ ansible-playbook pingtest.yml 
+Error no hosts file given
+
+<azureuser@azure playbooks>$ ansible-playbook pingtest.yml --ask-vault--pass
+Vault password:*****
+It will run sucessfully
+
 
 ```
