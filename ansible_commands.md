@@ -100,3 +100,47 @@ variable: "{{ correct }} Testing"
 <azureuser@azure playbooks>$ ansible-playbook pingtest.yml
 
 ```
+
+# Ansible Variables
+
+1. Variable names should be letters, numbers and underscores_.
+2. Should always starts with a letter
+3. Not valid variables examples
+    * Azure-user
+    * Tech Azure
+    * 21
+
+# Ansible Host Variable
+* You can also use variables in invenory files
+* Example:
+    [webservers]
+    Node1
+    Node2
+    Node3
+
+    [webservers:vars]
+    ansible_connection=ssh
+    ansible_user=root
+
+# Lab - Simple playbook for disabling SELinux in CentOS
+```
+<azureuser@azure playbooks>$ sudo nano selinux.yml
+
+---
+- name: selinux enable or disable
+  hosts: servers
+  vars:
+    status: disabled
+  tasks:
+    - name: changing SELinux from config file
+      lineinfile:
+        path: /etc/selinux/config
+        regexp: '^SELINUX='
+        line: 'SELINUX={{ status }}' # status variable called from above vars section status: disabled
+...
+
+<azureuser@azure playbooks>$ cat /etc/selinux/config
+
+<azureuser@azure playbooks>$ ansible-playbook servers selinux.yml
+
+```
