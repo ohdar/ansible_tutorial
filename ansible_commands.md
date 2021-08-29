@@ -288,3 +288,172 @@ nodes
 <azureuser@azure playbooks>$ ansible-playbook loops.yml
 
 ```
+
+# Deploy LAMP Stack Ansible Playbook
+* L = Linux
+* A = Apache (Web Server)
+* M = MariaDB/MySQL
+* P = PHP
+We are going to deploy an application which is written in PHP language.
+
+* Using Linux local account to install and configure LAMP
+* Inatalling Apache (Web Server)
+* Start and Enable services
+* Install PHP and MariaDB Server
+* Create Database called inventory
+* Create table called servers with Six columns (sn, servername, ip, env, location remarks)
+* Deploy php application which will fetch records from MariaDB in web page
+
+# Lab
+```
+<azureuser@azure playbooks>$ sudo nano deploylamp.yml
+---
+- name: Deploying LAMP Stack
+  hosts: node2
+  remote_user: ansibul1
+  become: yes
+
+  tasks:
+   - name: Installing Apache server
+     yum: name=httpd state=latest
+
+   - name: Start Apache Server service
+     service: name=httpd state=started
+
+   - name: Installing MariaDB Server
+     yum:
+      name:
+       - mariadb-server
+       - mariadb-devel
+       - mariadb-connector-odbc
+       - mariadb-server-utils
+       - python3-pyMySQL
+       - php
+       state: latest
+
+   - name: Start MariaDB Server Service
+     service: name=mariadb state=started
+
+   - name: Update MariaDB Server root password
+     mysql_user: 
+      name: root
+      host: node3
+      password: mysql
+      login_user: root
+      check_implicit_admin: yes
+      priv: "*.*:ALL,GRANT"
+
+   - name: Create a new database called Inventory
+     mysql_db: name=inventory state=present login_user=root login_password=mysql
+
+   - name: Copy SQL file
+     copy: src=/source/servers.sql dest=/tmp/servers.sql
+
+   - name: Create Table called servers with data
+     shell: mysql -u root -pmysql inventory < /tmp/servers.sql
+
+   - name: Copy PHP files
+     copy: src=/source/connection.php dest=/var/www/html/
+
+   - name: Copy Index.php file
+     copy: src=/source/index.php dest=/var/www/html/
+
+   - name: Restart web service
+     service: name=httpd state=restarted
+
+...
+
+<azureuser@azure playbooks>$ sudo mkdir /source
+<azureuser@azure playbooks>$ cd source
+<azureuser@azure playbooks>$ sudo nano servers.sql
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+CREATE TABLE IF NOT EXISTS 'servers' (
+    'sn' init(10) NOT NULL AUTO_INCREMENT,
+    'servname' varchar(255) NOT NULL,
+    'ip' varchar(255) NOT NULL,
+    'location' varchar(255) NOT NULL,
+    'env' varchar(255) NOT NULL,
+    'remarks' varchar(255) NOT NULL,
+    PRIMARY KEY ('sn')
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
+
+--
+-- Dumping data for table 'servers'
+--
+
+INSERT INTO 'servers' ('sn', 'servname', 'ip', 'location', 'env', 'remarks') VALUES (1,'ansible-master.localdomain.local', '192.168.1.18','India', 'Development', 'Ansible Development Master'), (2,'node2.localdomain.local', '192.168.1.19','India', 'Development', 'Ansible Node'), (3,'node3.localdomain.local', '192.168.1.20','India', 'Development', 'Ansible Node');
+
+<azureuser@azure playbooks>$ sudo nano connections.php
+
+<?php
+//server info
+$server = 'localhost';
+$user = 'root';
+$pass = 'mysql';
+$db = 'inventory';
+
+//connect to the database
+
+$mysqli = new mysqli($server, $user, $pass, $db);
+
+//show errors (remove this line if on a live site)
+
+mysqli_report(MYSQLI_REPORT_ERROR);
+
+?>
+
+<azureuser@azure playbooks>$ sudo nano index.php
+
+<html>
+<head>
+<title>Fetch Data from Databse</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+<body>
+<?php
+// connect to the database
+include('connection.php');
+
+// get the records from the database
+
+$sql = "SELECT * FROM servers ORDER BY sn DESC";
+
+$result = $conn->query($sql);
+
+if ($result->num_rows > 0) {
+  // output data of each row
+  while($row = $result->fetch_assoc()) {
+    echo "SN: " . $row["sn"]. " - ServrName: " . $row["servname"]. " - ip: " . $row["ip"]. " - Location: " . $row["location"]. " - Env: " . $row["env"]. " - Remarks: " . $row["remarks"]. "<br>";
+  }
+} else {
+  echo "0 results";
+}
+$conn->close();
+
+?>
+
+</body>
+</html>
+
+<azureuser@azure playbooks>$ ansible-playbook deploylamp.yml --syntax-check
+
+# status check is installed
+<azureuser@azure playbooks>$ systemctl status httpd
+<azureuser@azure playbooks>$ cd /var/www/html/
+<azureuser@azure html>$ ls
+<azureuser@azure html>$ cd
+<azureuser@azure ~>$ systemctl status mariadb
+
+<azureuser@azure playbooks>$ ansible-playbook deploylamp.yml
+
+<azureuser@azure playbooks>$ firewall-cmd --list-all
+<azureuser@azure playbooks>$ systemctl stop firewalld
+<azureuser@azure playbooks>$ sestatus
+<azureuser@azure playbooks>$ setenforce 0
+
+
+
+```
