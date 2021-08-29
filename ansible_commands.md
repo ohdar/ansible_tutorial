@@ -1,22 +1,24 @@
 # Ansible Ad-Hoc Commands
 
-ansible <Group/Server Name> -m <module> -a <arguments> -u <user name> --become
+ansible [host file added Group/Server Name] -m [module] -a [arguments] -u [user name] --become
 
--B 'SECONDS' [Running in Background]
+ansible -i [path-to-inventry-file] -m [module] -a [arguments] -u [user name] --become
 
--k (ask password)
+    -B 'SECONDS' [Running in Background]
 
--T 'TIMEOUT'
+    -k (ask password)
 
--a 'MODULE_ARGS'
+    -T 'TIMEOUT'
 
--b (become)
+    -a 'MODULE_ARGS'
 
--i (inventory file)
+    -b (become)
 
--m Module
+    -i (inventory file)
 
--v or -vvv or -vvvv
+    -m Module
+
+    -v or -vvv or -vvvv
 
 ## Ad-Hoc Command Examples
     ansible servers -a 'uptime'
