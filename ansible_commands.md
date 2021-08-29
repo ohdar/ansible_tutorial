@@ -575,5 +575,95 @@ mysqli_report(MYSQLI_REPORT_ERROR);
 
 <azureuser@azure playbooks>$ ansible-playbook deploylamp.yml --syntax-check
 <azureuser@azure playbooks>$ ansible-playbook deploylamp.yml --tags "restartapache"
+<azureuser@azure playbooks>$ ansible-playbook deploylamp.yml --tags "startapache,restartapache"
+
+
+------------------ Some service has to start always the put tag as always then run command without mention that tag it will run ---------------------------------
+
+<azureuser@azure playbooks>$ sudo nano deploylamp.yml
+---
+- name: Deploying LAMP Stack
+  hosts: node2
+  remote_user: ansibul1
+  become: yes
+
+  tasks:
+   - name: Installing Apache server
+     yum: name=httpd state=latest
+     tags:
+     - installapache
+
+   - name: Start Apache Server service
+     service: name=httpd state=started
+     tags:
+     - startapache
+
+   - name: Installing MariaDB Server
+     yum:
+      name:
+       - mariadb-server
+       - mariadb-devel
+       - mariadb-connector-odbc
+       - mariadb-server-utils
+       - python3-pyMySQL
+       - php
+       - php-xml
+       - php-mbstring
+       - php-devel
+       - php-soap
+       - php-dba
+       state: latest
+       tags:
+       - installmariadb
+
+   - name: Start MariaDB Server Service
+     service: name=mariadb state=started
+     tags:
+     - startmariadb
+
+   - name: Update MariaDB Server root password
+     mysql_user: 
+      name: root
+      host: node3
+      password: mysql
+      login_user: root
+      check_implicit_admin: yes
+      priv: "*.*:ALL,GRANT"
+     tags:
+     - configuredb
+
+   - name: Create a new database called Inventory
+     mysql_db: name=inventory state=present login_user=root login_password=mysql
+     tags:
+     - createdb
+
+   - name: Copy SQL file
+     copy: src=/source/servers.sql dest=/tmp/servers.sql
+     tags:
+     - copyfile
+
+   - name: Create Table called servers with data
+     shell: mysql -u root -pmysql inventory < /tmp/servers.sql
+     tags:
+     - dumpdata
+
+   - name: Copy PHP files
+     copy: src=/source/connection.php dest=/var/www/html/
+     tags:
+     - copyfile
+
+   - name: Copy Index.php file
+     copy: src=/source/index.php dest=/var/www/html/
+     tags:
+     - copyfile
+
+   - name: Restart web service
+     service: name=httpd state=restarted
+     tags:
+     - always
+
+...
+
+<azureuser@azure playbooks>$ ansible-playbook deploylamp.yml --tags "startmariadb"
 
 ```
