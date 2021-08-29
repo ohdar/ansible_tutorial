@@ -731,6 +731,85 @@ webserver.yml - created webserver.yml in webserver root folder
 <azureuser@azure playbooks>$ ansible-playbook webserver.yml --syntax-check
 <azureuser@azure playbooks>$ ansible-playbook webserver.yml
 
+```
 
+# Ansible Vault Protect Your Playbook Code
+
+```
+<azureuser@azure playbooks>$ ansible-vault create simple.yml
+New vault password:*****
+Confirm New Vault password:*****
+
+---
+- name: Ping server
+  hosts: all
+  tasks:
+   ping: 
+
+...
+
+<azureuser@azure playbooks>$ cat simple.yml
+
+444444444444445465656565545455555555555555555555555555555555553453243245354465656  -- completly encrypted
+444444444444445465656565545455555555555555555555555555555555553453243245354465656  -- completly encrypted
+444444444444445465656565545455555555555555555555555555555555553453243245354465656  -- completly encrypted
+444444444444445465656565545455555555555555555555555555555555553453243245354465656  -- completly encrypted
+
+<azureuser@azure playbooks>$ ansible-playbook simple.yml
+ERROR! Attempting to decrypt but no vault secrets found
+
+<azureuser@azure playbooks>$ ansible-playbook simple.yml --ask-vault--pass
+Vault password:*****
+
+ERROR! Run but error in playbook
+
+----------------#existing file encryption selinux.yml ------------------------
+content of selinux.yml
+---
+- name: selinux enable or disable
+  hosts: servers
+  tasks:
+    - name: changing SELinux from config file
+      lineinfile:
+        path: /etc/selinux/config
+        regexp: '^SELINUX='
+        line: 'SELINUX={{ status }}' # status variable called from above vars section status: disabled
+...
+
+<azureuser@azure playbooks>$ ansible-vault encrypt selinux.yml
+New vault password:*****
+Confirm New Vault password:*****
+
+<azureuser@azure playbooks>$ cat selinux.yml
+
+444444444444445465656565545455555555555555555555555555555555553453243245354465656  -- completly encrypted
+444444444444445465656565545455555555555555555555555555555555553453243245354465656  -- completly encrypted
+444444444444445465656565545455555555555555555555555555555555553453243245354465656  -- completly encrypted
+444444444444445465656565545455555555555555555555555555555555553453243245354465656  -- completly encrypted
+
+<azureuser@azure playbooks>$ ansible-playbook selinux.yml --ask-vault--pass
+Vault password:*****
+
+<azureuser@azure playbooks>$ ansible-vault edit selinux.yml
+Vault password:*****
+
+---
+- name: selinux enable or disable
+  hosts: localhost
+  tasks:
+    - name: changing SELinux from config file
+      lineinfile:
+        path: /etc/selinux/config
+        regexp: '^SELINUX='
+        line: 'SELINUX={{ status }}' # status variable called from above vars section status: disabled
+...
+
+<azureuser@azure playbooks>$ ansible-playbook selinux.yml --ask-vault--pass
+Vault password:*****
+
+<azureuser@azure playbooks>$ sudo nano passwdfile
+redhat   #---content of passwdfile----
+
+<azureuser@azure playbooks>$ ansible-playbook selinux.yml --vault--password-file passwdfile
 
 ```
