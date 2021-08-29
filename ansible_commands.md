@@ -82,7 +82,7 @@ variable: "{{ correct }} Testing"
 
 ```
 
-# Lab 
+# Lab - Writing simple playbook for ping to all servers
 ```
 <azureuser@azure>$ mkdir /playbooks 
 <azureuser@azure>$ ls
