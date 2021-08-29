@@ -926,7 +926,94 @@ Decryption successful
         line: 'SELINUX={{ status }}' # status variable called from above vars section status: disabled
 ...
 
+```
+
+# Launch EC2 Instance Using Ansible Playbook
+## pre-requsite
+* yum install python python-pip python-setuptools*
+* curl -O https://bootstrap.pypa.io/get-pip.py
+* python get-pip.py
+* pip install boto  ---- authentication services of AWS
+* pip install boto3 ---- authentication services of AWS
+* python --version
+* pip --version
+* yum install ansible git
+* Refer EC2 from Repository
+
+```
+<azureuser@azure playbooks>$ sudo nano ~/.boto
+<azureuser@azure playbooks>$ cat boto   --- AWS IAM CREATE ONE USER AND CREATE BLOW CREDENTIALS
+[Credentials]
+aws_access_key_id = XXXXEEEERRRR
+aws_secret_access_key = 2133213fsadsads32323213dsadsd
+
+<azureuser@azure playbooks EC2>$ sudo nano spinawssec2.yml
+
+---
+  - name: Provision an EC2 Instance
+    hosts: localhost
+    connection: local
+    gather_facts: False
+    tags: provisioning
+
+    vars:
+      instance_type: t2.micro
+      security_group: webservers
+      image: ami-0080e4c5bc078760e
+      region: us-east-1
+      keypair: NVirginia  # name of keypair taken for AWS console
+      count: 1
+
+    tasks:
+
+      - name: Create New security group with below given name
+        local_action:
+          module: ec2_group
+          name: "{{ security_group }}"
+          description: Security Group for Newly Created EC2 Instance
+          region: "{{ region }}"
+          rules:
+            - proto: tcp
+              from_port: 22
+              to_port: 22
+              cidr_ip: 0.0.0.0/0
+            - proto: tcp
+              from_port: 80
+              to_port: 80
+              cidr_ip: 0.0.0.0/0
+          rules_egress:
+            - proto: all
+              cidr_ip: 0.0.0.0/0
 
 
+      - name: Launch the new t2 micro EC2 Instance
+        local_action: ec2
+                      group={{ security_group }}
+                      instance_type={{ instance_type}}
+                      image={{ image }}
+                      wait=true
+                      region={{ region }}
+                      keypair={{ keypair }}
+                      count={{count}}
+        register: ec2
+
+      - name: Wait for EC2 Instance to Spin-up and ready for SSH access
+        local_action: wait_for
+                      host={{ item.public_ip }}
+                      port=22
+                      state=started
+        with_items: "{{ ec2.instances }}"
+
+      - name: Adding Tags to Identify
+        local_action: ec2_tag resource={{ item.id }} region={{ region }} state=present
+        with_items: "{{ ec2.instances }}"
+        args:
+          tags:
+            Name: Web Server
+            Owner: AWS User
+            PurPose: Testing EC2 Instance From Ansible
+...
+
+<azureuser@azure playbooks EC2>$ ansible-playbook spinawssec2.yml
 
 ```
