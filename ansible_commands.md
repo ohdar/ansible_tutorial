@@ -414,24 +414,48 @@ mysqli_report(MYSQLI_REPORT_ERROR);
 </head>
 <body>
 <?php
-// connect to the database
-include('connection.php');
+        // connect to the database
+        include('connection.php');
 
-// get the records from the database
+        // get the records from the database
+            if ($result = $mysqli->query("SELECT * FROM servers ORDER BY sn DESC"))
+            {
+                // display records if there are records to display
+                    if ($result->num_rows > 0)
+                    {
+                     // display records in a table
+                     echo "<table border='1' cellpadding='10'>";
+                     // set table headers
+                     echo "<tr><th>S.No</th><th>Server Name</th><th>IP Address</th><th>Location</th><th>Environment</th><th>Remarks</th></tr>";
+                     while ($row = $result->fetch_object())
+                        {
+                          // set up a row for each record
+                          echo "<tr>";
+                          echo "<td>" . $row->sn . "</td>";
+                          echo "<td>" . $row->servname . "</td>";
+                          echo "<td>" . $row->ip . "</td>";
+                          echo "<td>" . $row->location . "</td>";
+                          echo "<td>" . $row->env . "</td>";
+                          echo "<td>" . $row->remarks . "</td>";
+                          echo "</tr>";
+                        }
 
-$sql = "SELECT * FROM servers ORDER BY sn DESC";
+                     echo "</table>";
+                    }
+                    // if there are no records in the database, display an alert message
+                    else
+                    {
+                     echo "No results to display!";
+                    }
+            }
+            // show an error if there is an issue with the database query
+            else
+            {
+               echo "Error: " . $mysqli->error;
+            }
 
-$result = $conn->query($sql);
-
-if ($result->num_rows > 0) {
-  // output data of each row
-  while($row = $result->fetch_assoc()) {
-    echo "SN: " . $row["sn"]. " - ServrName: " . $row["servname"]. " - ip: " . $row["ip"]. " - Location: " . $row["location"]. " - Env: " . $row["env"]. " - Remarks: " . $row["remarks"]. "<br>";
-  }
-} else {
-  echo "0 results";
-}
-$conn->close();
+            // close database connection
+            $mysqli->close();
 
 ?>
 
