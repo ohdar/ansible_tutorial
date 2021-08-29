@@ -667,3 +667,55 @@ mysqli_report(MYSQLI_REPORT_ERROR);
 <azureuser@azure playbooks>$ ansible-playbook deploylamp.yml --tags "startmariadb"
 
 ```
+
+# Ansible Roles
+### Configuration Management and App deployment tool
+* Larger playbooks are split into multiple files
+* Roles are a way to group multiple different tasks or complex tasks
+* Reuse of playbook code is easy with roles
+* Roles are major for Ansible
+* roles have a structured layout
+
+### Roles Directory Structure
+* Defaults: Default variables for the role
+* Files: Contains files to copy to destination
+* Handlers: Based on notify do something specified
+* Meta: Meta data about current role
+* Tasks: List of tasks to be executed by the role
+* Templates: Template files to deploy
+* Tests: If you want additional verification of you build
+* Vars: Other variables for the role
+
+```
+.
+|___ apache
+     |
+     |____ defaults
+     |     |___ main.yml
+     |
+     |____ files
+     |
+     |____ handlers
+     |     |___ main.yml
+     |
+     |____ meta
+     |     |___ main.yml
+     |
+     |____ README.md
+     |
+     |____ tasks
+     |     |___ main.yml
+     |
+     |____ templates
+     |
+     |____ tests
+     |     |___ main.yml
+     |
+     |____ vars
+           |___ main.yml
+
+```
+
+# Lab
+
+<azureuser@azure playbooks>$ ansible-galaxy init webserver --offline
