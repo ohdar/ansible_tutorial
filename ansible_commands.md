@@ -231,3 +231,60 @@ nodes
 
 
 ```
+
+# Ansible Conditional Variables & Loops 
+
+## Conditional Variable
+
+```
+<azureuser@azure playbooks>$ sudo nano startandstop.yml
+
+---
+- name: Start and Stop Services
+  hosts: servers
+  tasks:
+   - service: name=postgresql state=started
+     when: ansible_host == "node5.localdomain.local"  # this node is not present
+
+   - service: name=sshd state=restarted
+     when: ansible_host == "node2.localdomain.local" # this command is only applicable to node2
+...
+
+<azureuser@azure playbooks>$ ansible-playbook servers startandstop.yml
+
+```
+## Loop Variable
+```
+<azureuser@azure playbooks>$ sudo nano loops.yml
+
+---
+- name: Install multiple packages
+  hosts: node2
+  tasks:
+   - name: Install packages
+     yum: name={{item}} state=latest # here item is loop variable
+     with_items:
+     - make
+     - gcc
+     - httpd
+     - wget
+
+...
+
+---
+- name: Install multiple packages
+  hosts: node2
+  tasks:
+   - name: Install packages
+     yum: 
+      name: "{{ item }}"                        # here item is loop variable
+      state: present
+     loop: 
+      - {name: 'make', name: 'gcc', name: 'httpd', name: 'wget'}
+     
+
+...
+
+<azureuser@azure playbooks>$ ansible-playbook loops.yml
+
+```
