@@ -1,13 +1,21 @@
 # Ansible Ad-Hoc Commands
 
 ansible <Group/Server Name> -m <module> -a <arguments> -u <user name> --become
+
 -B 'SECONDS' [Running in Background]
+
 -k (ask password)
+
 -T 'TIMEOUT'
+
 -a 'MODULE_ARGS'
+
 -b (become)
+
 -i (inventory file)
+
 -m Module
+
 -v or -vvv or -vvvv
 
 ## Ad-Hoc Command Examples
@@ -30,7 +38,7 @@ ansible <Group/Server Name> -m <module> -a <arguments> -u <user name> --become
         cat /etc/passwd |grep azureuser
 
     ansible servers -m service -a "name=sshd state=started"
-    
+
     ansible servers -m shell -a "/sbin/service sshd status"
 
 
