@@ -56,12 +56,13 @@ A play can have number of tasks. In playbook there is number of plays. In this e
 ### Playbook Alignment
 ```
 ---
--host: all
- tasks:
-    -name: Copy File
-    -copy:
+- host: all
+  tasks:
+    - name: Copy File
+    - copy:
         src: /home/azureuser/.ssh/id_rsa.pub
         dest:/home/azureuser/.ssh/authorized_keys
             owner:azureuser
 ...
 ```
+
