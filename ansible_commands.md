@@ -1046,5 +1046,5 @@ Role: pureport.pureport
 <azureuser@azure playbooks EC2>$ ansible-galaxy install a1max1.spadeDocker
 <azureuser@azure playbooks EC2>$ ansible-galaxy init a1max1.spadeDocker
 
-
+ 
  ```
