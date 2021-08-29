@@ -64,5 +64,22 @@ A play can have number of tasks. In playbook there is number of plays. In this e
         dest:/home/azureuser/.ssh/authorized_keys
             owner:azureuser
 ...
+
+A few rules you need to follow is. when you want include: (colon) in statement you have to enable quotations ("") from start to end shown example is below
+
+-name: Incorrect: Method: to Write
+- name: "Testing: Production and UAT"
+
+you can still write paths as like
+
+windows_path: c:\window
+
+to tell you further on writing ansible variables and there examples
+
+content: "{{ correct }}"
+variable: "{{ correct }} Testing"
+ contnt: "{{ Wrong }}" Testing
+
 ```
+
 
