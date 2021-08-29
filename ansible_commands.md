@@ -909,5 +909,24 @@ Error no hosts file given
 Vault password:*****
 It will run sucessfully
 
+<azureuser@azure playbooks>$ ansible-vault decrypt selinux.yml
+Vault password:*****
+Decryption successful
+
+<azureuser@azure playbooks>$ cat selinux.yml
+
+---
+- name: selinux enable or disable
+  hosts: localhost
+  tasks:
+    - name: changing SELinux from config file
+      lineinfile:
+        path: /etc/selinux/config
+        regexp: '^SELINUX='
+        line: 'SELINUX={{ status }}' # status variable called from above vars section status: disabled
+...
+
+
+
 
 ```
