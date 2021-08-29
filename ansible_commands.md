@@ -43,6 +43,11 @@ ansible -i [path-to-inventry-file] -m [module] -a [arguments] -u [user name] --b
 
     ansible servers -m shell -a "/sbin/service sshd status"
 
-
-
+# How to write First Ansible Playbook 
+1. Playbook begin with ---
+2. Comments begin with #
+3. Members of lists begins with -
+4. Playbook ends with ...
+5. Key value Pairs "<"key">": "<"value">"
+6. All the playbooks are written in YAML == "[Y]et [A]nother [M]arkup [L]anguage"
 
