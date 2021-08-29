@@ -718,4 +718,19 @@ mysqli_report(MYSQLI_REPORT_ERROR);
 
 # Lab
 
+```
 <azureuser@azure playbooks>$ ansible-galaxy init webserver --offline
+# Above command download directory structure from ansible website repository https://galaxy.ansible.com
+Note : Refer webserver folder of this repository here i have changed few files as below
+files - created index.html
+meta - added purpose details
+handlers - added handlers in main.yml
+tasks - added tasks in main.yml
+webserver.yml - created webserver.yml in webserver root folder
+
+<azureuser@azure playbooks>$ ansible-playbook webserver.yml --syntax-check
+<azureuser@azure playbooks>$ ansible-playbook webserver.yml
+
+
+
+```

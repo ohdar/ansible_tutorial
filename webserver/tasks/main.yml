@@ -1,2 +1,13 @@
 ---
 # tasks file for webserver
+- name: Installing Apache server
+  yum: name=httpd state=latest
+  
+- name: Start Apache Server service
+  service: name=httpd state=started
+  
+- name: Copy Index.php file
+  copy: src=index.html dest=/var/www/html/
+  notify:
+  - restarteweb
+  
