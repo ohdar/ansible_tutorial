@@ -1017,3 +1017,34 @@ aws_secret_access_key = 2133213fsadsads32323213dsadsd
 <azureuser@azure playbooks EC2>$ ansible-playbook spinawssec2.yml
 
 ```
+
+# Ansible Galaxy is a community https://galaxy.ansible.com
+
+```
+<azureuser@azure playbooks EC2>$ ansible-galaxy init testing
+<azureuser@azure playbooks EC2>$ ansible-galaxy search elasticsearch --author geerlingguy
+Found 6 roles matching your search:
+
+ Name                              Description
+ ----                              -----------
+ geerlingguy.elasticsearch         Elasticsearch for Linux.
+ geerlingguy.elasticsearch-curator Elasticsearch curator for Linux.
+ geerlingguy.filebeat              Filebeat for Linux.
+ geerlingguy.fluentd               Fluentd for Linux.
+ geerlingguy.kibana                Kibana for Linux.
+ geerlingguy.logstash              Logstash for Linux.
+
+<azureuser@azure playbooks EC2>$ ansible-galaxy init geerlingguy.elasticsearch
+<azureuser@azure playbooks EC2>$ ansible-galaxy install geerlingguy.elasticsearch
+
+<azureuser@azure playbooks EC2>$ ansible-galaxy info pureport.pureport
+Role: pureport.pureport
+        description: 
+        path: ('/home/azureuser/.ansible/roles', '/usr/share/ansible/roles', '/etc/ansible/roles')
+
+<azureuser@azure playbooks EC2>$ ansible-galaxy search docker
+<azureuser@azure playbooks EC2>$ ansible-galaxy install a1max1.spadeDocker
+<azureuser@azure playbooks EC2>$ ansible-galaxy init a1max1.spadeDocker
+
+
+ ```
