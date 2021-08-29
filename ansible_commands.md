@@ -812,4 +812,9 @@ redhat   #---content of passwdfile----
 
 <azureuser@azure playbooks>$ ansible-playbook selinux.yml --vault--password-file passwdfile
 
+<azureuser@azure playbooks>$ ansible-vault rekey selinux.yml
+New vault password:*****
+Confirm New Vault password:*****
+Rekey successful
+
 ```
